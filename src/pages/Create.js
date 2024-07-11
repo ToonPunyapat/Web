@@ -45,8 +45,8 @@ function Create() {
   return (
     <div>
       <Template />
-      <div className="App container">
-        <h1 className="text-center mt-3">Create Note Customer</h1>
+      <div className=" container">
+        <h1 className="text-center mt-3 d-flex">Create Note Customer</h1>
         <div className="card">
           <div className="card-body">
             <div className="information">
@@ -108,7 +108,9 @@ function Create() {
           <Modal.Header closeButton>
             <Modal.Title>Error</Modal.Title>
           </Modal.Header>
-          <Modal.Body>Cannot add note. Please fill out all fields.</Modal.Body>
+          <Modal.Body>
+            ไม่สามารถเพิ่มข้อมูลได้ กรุณาเติมข้อมูลให้ครบทุกช่อง
+          </Modal.Body>
           <Modal.Footer>
             <Button variant="secondary" onClick={handleCloseModal}>
               Close
