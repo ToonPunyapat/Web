@@ -17,8 +17,8 @@ function Search() {
   const [customerToDelete, setCustomerToDelete] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const [totalResults, setTotalResults] = useState(0);
-  const [pageSize, setPageSize] = useState(3);
+  const [totalResults, setTotalResults] = useState(0); // New state for total results
+  const [pageSize, setPageSize] = useState(3); // Default page size
 
   const getCustomers = async (category, page = 1) => {
     let params = {
@@ -35,7 +35,7 @@ function Search() {
         console.log(response.data); // Debugging output
         setCustomers(response.data.customers);
         setTotalPages(response.data.totalPages);
-        setTotalResults(response.data.totalResults);
+        setTotalResults(response.data.totalResults); // Update total results
       })
       .catch((error) => {
         console.error("Error fetching customers:", error);
@@ -77,7 +77,7 @@ function Search() {
         })
         .then((response) => {
           setShowModal(false);
-          getCustomers(category, currentPage);
+          getCustomers(category, currentPage); // Fetch updated customers list
         })
         .catch((error) => {
           console.error("Error updating customer:", error);
@@ -112,7 +112,7 @@ function Search() {
     <div>
       <Template />
       <div className="container">
-        <h1 className="text-center mt-3">Search Note Customer</h1>
+        <h1 className="text-center d-flex mt-3">Search Note Customer</h1>
         <div className="card">
           <div className="card-box p-3">
             <span>Category</span>
@@ -235,9 +235,7 @@ function Search() {
           <Modal.Header closeButton>
             <Modal.Title>Delete Customer</Modal.Title>
           </Modal.Header>
-          <Modal.Body>
-            Are you sure you want to delete this customer?
-          </Modal.Body>
+          <Modal.Body>แน่ใจหรือไม่ ที่จะลบข้อมูล?</Modal.Body>
           <Modal.Footer>
             <Button
               variant="secondary"
