@@ -40,41 +40,42 @@ app.get("/search", (req, res) => {
   const limit = parseInt(req.query.limit) || 10;
   const offset = (page - 1) * limit;
 
-  let sqlCount = "SELECT COUNT(*) AS count FROM customers";
-  let sqlData = "SELECT * FROM customers";
+  let sql;
+  let sqlCount;
   let params = [];
 
   if (category && category !== "All") {
-    sqlCount += " WHERE category_note = ?";
-    sqlData += " WHERE category_note = ?";
-    params.push(category);
+    sql = "SELECT * FROM customers WHERE category_note = ? LIMIT ? OFFSET ?";
+    sqlCount =
+      "SELECT COUNT(*) AS count FROM customers WHERE category_note = ?";
+    params = [category, limit, offset];
+  } else {
+    sql = "SELECT * FROM customers LIMIT ? OFFSET ?";
+    sqlCount = "SELECT COUNT(*) AS count FROM customers";
+    params = [limit, offset];
   }
 
-  sqlData += " LIMIT ? OFFSET ?";
-  params.push(limit, offset);
-
-  db.query(sqlCount, params.slice(0, params.length - 2), (err, countResults) => {
+  db.query(sqlCount, category ? [category] : [], (err, countResults) => {
     if (err) {
-      console.error("Error fetching customers count:", err.sqlMessage || err);
-      res.status(500).send("An error occurred while fetching customers.");
+      console.error("Error counting customers:", err.sqlMessage || err);
+      res.status(500).send("An error occurred while counting customers.");
       return;
     }
 
-    const totalCustomers = countResults[0].count;
-    const totalPages = Math.ceil(totalCustomers / limit);
+    const totalResults = countResults[0].count;
+    const totalPages = Math.ceil(totalResults / limit);
 
-    db.query(sqlData, params, (err, results) => {
+    db.query(sql, params, (err, results) => {
       if (err) {
         console.error("Error fetching customers:", err.sqlMessage || err);
         res.status(500).send("An error occurred while fetching customers.");
         return;
       }
 
-      res.json({ customers: results, totalPages: totalPages });
+      res.json({ customers: results, totalPages, totalResults });
     });
   });
 });
-
 
 app.put("/update", (req, res) => {
   const { id, note, category_note } = req.body;
